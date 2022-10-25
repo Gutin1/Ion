@@ -9,6 +9,7 @@ import net.horizonsend.ion.server.legacy.commands.AchievementsCommand
 import net.starlegacy.database.schema.starships.PlayerStarshipData
 import net.starlegacy.legacyDisable
 import net.starlegacy.legacyEnable
+import org.bukkit.generator.ChunkGenerator
 import net.starlegacy.util.blockKeyX
 import net.starlegacy.util.blockKeyY
 import net.starlegacy.util.blockKeyZ
@@ -110,5 +111,9 @@ class IonServer : JavaPlugin() {
 		IonWorld.unregisterAll()
 		legacyDisable()
 		Connectivity.close()
+	}
+
+	override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
+		return Generator()
 	}
 }

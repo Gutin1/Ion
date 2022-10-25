@@ -233,3 +233,13 @@ fun vectorToBlockFace(vector: Vector, includeVertical: Boolean = false): BlockFa
 		else -> BlockFace.EAST
 	}
 }
+
+fun findNearest(locations: List<Location>, origin: Location): Location {
+	val distances: MutableMap<Location, Double> = mutableMapOf()
+
+	locations.forEach {
+		val distance = distance(it.x, it.y, it.z, origin.x, origin.y, origin.z)
+		distances[it] = distance
+	}
+	return distances.minBy { it.value }.component1()
+}
