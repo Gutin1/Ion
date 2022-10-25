@@ -116,4 +116,8 @@ class IonServer : JavaPlugin() {
 	override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
 		return Generator()
 	}
+
+	override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
+		return Generator()
+	}
 }
