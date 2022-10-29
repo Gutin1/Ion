@@ -2,10 +2,11 @@ package net.horizonsend.ion.server
 
 import java.util.Random
 import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.sin
 import net.horizonsend.ion.common.loadConfiguration
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import net.minecraft.core.BlockPos
-import net.starlegacy.util.d
 import net.starlegacy.util.distance
 import org.bukkit.Material
 import org.bukkit.generator.ChunkGenerator
@@ -15,8 +16,7 @@ import org.bukkit.util.noise.PerlinOctaveGenerator
 
 class Generator : ChunkGenerator() {
 	private val configuration: AsteroidConfiguration = loadConfiguration(Ion.dataFolder.resolve("asteroids"), "asteroidconfiguration.conf")
-	private val features: AsteroidConfiguration = loadConfiguration(Ion.dataFolder.resolve("asteroids"), "asteroidfeatures.conf")
-	private val fileName = "asteroidfeatures.json"
+	private val features: AsteroidFeature = loadConfiguration(Ion.dataFolder.resolve("asteroids"), "asteroidfeatures.conf")
 
 	// Generates the asteroids based on the coordinates supplied.
 	// This is the first step in world generation. It only needs to generate the canvas which features are applied to.
@@ -24,23 +24,26 @@ class Generator : ChunkGenerator() {
 		val asteroids = mutableSetOf<Asteroid>()
 		val worldX = chunkX * 16
 		val worldZ = chunkZ * 16
-		var searchRange = 1
+		val searchRange = 2
 		val thread = Thread().start()
 
-		//while ((asteroids.isEmpty())) {
-			for (originX in chunkX - searchRange..chunkX + searchRange) {
-				for (originZ in chunkZ - searchRange.. chunkZ + searchRange) {
-					val chunkAsteroids = thread.run { generateAsteroids(worldInfo, originX, originZ) }
+		//while ((asteroids.isEmpty())) { // causes problems (Loses the benefits of searching multiple chunks if one is found in the same chunk)
+		// Searches a 3x3 radius centered on the chunk for asteroids. Multiple chunks searched to avoid cutoffs. There might be a better way of doing this.
+		for (originX in chunkX - searchRange..chunkX + searchRange) {
+			for (originZ in chunkZ - searchRange.. chunkZ + searchRange) {
+				val chunkAsteroids = thread.run { generateAsteroids(worldInfo, originX, originZ) }
 
-					if (chunkAsteroids.isEmpty()) continue
+				if (chunkAsteroids.isEmpty()) continue
 
-					chunkAsteroids.forEach { asteroids.add(it) }
-				}
+				chunkAsteroids.forEach { asteroids.add(it) }
 			}
+			//}
 			//searchRange++
-		//}
+		}
 
 		if (asteroids.isEmpty()) return
+		//println(asteroids)
+
 		// Iterate through world
 		for (x in 0..15) {
 			for (z in 0..15) {
@@ -48,9 +51,14 @@ class Generator : ChunkGenerator() {
 					val closestAsteroid = thread.run { containsAsteroid(worldX + x, y, worldZ + z, asteroids) }
 
 					//Place asteroid
-					if (closestAsteroid.second) {
+					if (closestAsteroid.second) { // TODO: Block selector logic (smooth noise (sawtooth wave?)), ore population
+						val asteroid = closestAsteroid.first
+						val noise = asteroid.noise
+						noise.setScale(0.75)
+						val paletteSample = (((noise.noise(worldX + x.toDouble(), y.toDouble(), worldZ + z.toDouble(), 1.0, 1.0, true) + 1) / 2) * asteroid.palette.size).toInt()
+						val material = asteroid.palette[paletteSample].keys.random()
 
-						val blockPalette = "B"
+						chunkData.setBlock(x, y, z, material)
 
 					} else chunkData.setBlock(x, y, z, Material.AIR)
 				}
@@ -63,15 +71,15 @@ class Generator : ChunkGenerator() {
 //		super.generateSurface(worldInfo, random, chunkX, chunkZ, chunkData)
 //	}
 
-	override fun generateBedrock(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
-		if (chunkData.minHeight == worldInfo.minHeight) {
-			for (x in 0..15) {
-				for (z in 0..15) {
-					chunkData.setBlock(x, chunkData.minHeight, z, org.bukkit.Material.AIR)
-				}
-			}
-		}
-	}
+//	override fun generateBedrock(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
+//		if (chunkData.minHeight == worldInfo.minHeight) {
+//			for (x in 0..15) {
+//				for (z in 0..15) {
+//					chunkData.setBlock(x, chunkData.minHeight, z, org.bukkit.Material.AIR)
+//				}
+//			}
+//		}
+//	}
 
 	override fun shouldGenerateSurface(): Boolean {
 		return true
@@ -98,24 +106,11 @@ class Generator : ChunkGenerator() {
 	}
 
 	// Takes the features .
-//	private fun parseDensity(equation: String, baseDensity: Double, fallOff: Double, x: Int, y: Int, z: Int): Double {
-//		val formattedEquation = formatEquation(equation, baseDensity, fallOff, x, y, z)
-//
-//		val finalDensity = Expressions().eval(formattedEquation).toDouble()
-//		val finalDensity = 1.0
-//		return finalDensity
-//	}
+	private fun parseDensity(x: Int, y: Int, z: Int): Double { // TODO
 
-//	private fun formatEquation(
-//		equation: String, baseDensity: Double, fallOff: Double, x: Int, y: Int, z: Int,
-//	): String {
-//		return equation.lowercase()
-//			.replace("basedensity", "$baseDensity")
-//			.replace("falloff", "$fallOff")
-//			.replace("x", "$x")
-//			.replace("y", "$y")
-//			.replace("z", "$z")
-//	}
+		val finalDensity = configuration.baseAsteroidDensity
+		return finalDensity
+	}
 
 	// Gets the asteroid density for each feature at a coordinate, and finds the max.
 //	private fun finalAsteroidDensity(worldInfo: WorldInfo, x: Int, y: Int, z: Int): Double {
@@ -142,47 +137,37 @@ class Generator : ChunkGenerator() {
 		val asteroids: MutableSet<Asteroid> = mutableSetOf()
 		val worldX = chunkX * 16
 		val worldZ = chunkZ * 16
+		val random = Random(worldInfo.seed)
 
 		val asteroidLocations: MutableMap<BlockPos, Double> = mutableMapOf()
 
-		for (count in 0..16) { // generates 16 random points across the chunk (chunkX, chunkZ), selects those with the highest density.
-			// Base asteroid density is 0.25 asteroids per chunk.
-			val offsetNoise = PerlinOctaveGenerator(worldInfo.seed + count, 1)
+		// Base asteroid density is 0.25 asteroids per chunk.
+		for (count in 0..(1 * ceil(parseDensity(worldX, worldInfo.maxHeight / 2, worldZ)).toInt())) {
+			val x = abs(((worldX + 115249 + count) % 30) - 15) + worldX // random value between 0-15 added to the chunk location to get real location
+			val z = abs(((worldZ + 115249 + count) % 30) - 15) + worldZ // random value between 0-15 added to the chunk location to get real location
+			val y = (abs(((x * z + 115249 + count) % ((worldInfo.maxHeight + worldInfo.minHeight) * 2)) - worldInfo.maxHeight)) - worldInfo.minHeight // random value between 0-build limit added to the chunk location to get real location
 
-			val xSample = offsetNoise.noise((worldX).toDouble(), (worldX).toDouble(), 1.0, 1.0, true)// I hate floating point errors
-			val x = (((xSample + 1) / 2).d() * 15.0) + worldX.toDouble() // random value between 0-15 added to the chunk location to get real location
+			val chanceSeed = BlockPos(x, y, z).hashCode() + count
+			val chance = abs((chanceSeed % 200) - 100.0) // random number out of 100
 
-			val zSample = offsetNoise.noise((worldZ).toDouble(), (worldZ).toDouble(), 1.0, 1.0, true)
-			val z = (((zSample + 1) / 2).d() * 15.0) + worldZ.toDouble() // random value between 0-15 added to the chunk location to get real location
+			asteroidLocations[BlockPos(x, y, z)] = chance
 
-			val ySample = offsetNoise.noise(x, z, 0.0, 0.5)
-			val y = worldInfo.maxHeight * ( ySample + 0.5) // random value between 0-build limit added to the chunk location to get real location
-
-
-			val perlinOctaveGenerator = PerlinOctaveGenerator(worldInfo.seed, 1)
-			perlinOctaveGenerator.setScale(0.001)
-			val perlinSample = perlinOctaveGenerator.noise(x * y, y, z * y, 1.0, 1.0, true)
-
-			//println("X Sample: $xSample, X: $x, Y Sample: $ySample, Y: $y, Z Sample: $zSample, Z: $z, perlinSample: $perlinSample")
-
-			asteroidLocations[BlockPos(x.toInt(), y.toInt(), z.toInt())] = perlinSample
+			//println("x: $x, y: $y, z: $z, chance: $chance, density: ${parseDensity(x, y, z) * 10}")
 		}
-
 		for (asteroidLocation in asteroidLocations) {
 			val location = asteroidLocation.key
-			if (asteroidLocation.value > /*finalAsteroidDensity(worldInfo, location.blockX, location.blockY, location.blockZ)*/ 0.5) {
+			if (asteroidLocation.value < (parseDensity(location.x, location.y, location.z) * 10)) { // if asteroid chance is less than the percentage of asteroids which should contain a chunk
 
 				val noise = PerlinOctaveGenerator(location.hashCode().toLong(), 1)
 				noise.setScale(0.05)
 
-				// Get material palette
-				val paletteSample = noise.noise(location.x.toDouble(), location.y.toDouble(), location.z.toDouble(), true)
-				val blockPalette: List<Map<Material, Double>> = configuration.blockPalettes[configuration.blockPalettes.size * ((paletteSample + 1) / 2).toInt()]
+				// Get material palette 115249
+				val blockPalette: List<Map<Material, Double>> = configuration.blockPalettes[abs(((location.hashCode()) % (configuration.blockPalettes.size * 2)) - configuration.blockPalettes.size)]
 
-				val size = abs(noise.noise(location.x.toDouble(), location.y.toDouble(), location.z.toDouble()) + 1) * configuration.baseAsteroidSize
-				val special = false
+				val size = random.nextDouble(5.0, (configuration.blockPalettes.size * 2.0))
+				val special = false //TODO
 				val ores = configuration.oreWeights
-				val octaves = abs(noise.noise(location.x.toDouble(), location.y.toDouble(), location.z.toDouble()) + 1) * configuration.baseAsteroidRoughness
+				val octaves = ((sin(location.hashCode().toDouble() + size) + 1) / 2) * configuration.baseAsteroidRoughness
 
 				if (location.y - size > worldInfo.minHeight && location.y + size < worldInfo.maxHeight)
 					asteroids.add(Asteroid(location, blockPalette, size, special, octaves.toInt(), ores, noise))
@@ -201,9 +186,12 @@ class Generator : ChunkGenerator() {
 			val location = asteroid.location
 			if (!asteroid.special) {
 				val vector = Vector(x, y, z).subtract(Vector(asteroid.location.x, asteroid.location.y, asteroid.location.z)).normalize()
+				asteroid.noise.setScale(0.65 / asteroid.size)
 				val offset = asteroid.noise.noise(x.toDouble(), y.toDouble(), z.toDouble(), 0.0, 1.0, false) * asteroid.size * 2
 				val size = vector.multiply(offset).length()
 				val distanceToSurface = distance(x, y, z, location.x, location.y, location.z) - size
+
+				//TODO: Ore selection
 
 				distances[asteroid] = distanceToSurface
 			}
@@ -212,15 +200,6 @@ class Generator : ChunkGenerator() {
 
 		return Pair(lowestEntry.key, lowestEntry.value < 0)
 	}
-
-	data class AsteroidFeature(
-		val name: String = "",
-		val baseDensity: Double = 1.0,
-		val densityFalloff: Double = 1.0,
-		val outerRadius: Double = 0.0,
-		val innerRadius: Double = 0.0,
-		val center: BlockPos,
-	)
 
 	data class Asteroid(
 		val location: BlockPos,

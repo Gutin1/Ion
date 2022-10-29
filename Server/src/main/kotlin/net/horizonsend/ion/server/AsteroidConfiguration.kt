@@ -5,10 +5,9 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @ConfigSerializable
 data class AsteroidConfiguration(
-	val baseAsteroidSize: Double = 10.0,
-	val baseAsteroidDensity: Double = 1.0,
-	val baseAsteroidFalloff: Double = 10.0,
-	val baseAsteroidRoughness: Double = 1.0,
-	val blockPalettes: List<List<Map<Material, Double>>> = listOf(listOf(mapOf(Material.STONE to 1.0))), // Double is the number of rolls for this material.
-	val oreWeights: List<Map<Material, Double>> = listOf(mapOf(Material.STONE to 1.0)), // Double is the number of rolls for this material.
+	val baseAsteroidSize: Double = 14.0,
+	val baseAsteroidDensity: Double = 0.25, // Roughly a base level of the number of asteroids per chunk
+	val baseAsteroidRoughness: Double = 4.0,
+	val blockPalettes: ArrayList<List<Map<Material, Double>>> = arrayListOf(listOf(mapOf(Material.STONE to 1.0))), // Double is the number of rolls for this material.
+	val oreWeights: ArrayList<Map<Material, Double>> = arrayListOf(mapOf(Material.STONE to 1.0)), // Double is the number of rolls for this material.
 )
