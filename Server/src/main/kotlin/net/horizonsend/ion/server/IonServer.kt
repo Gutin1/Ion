@@ -4,10 +4,14 @@ import co.aikar.commands.PaperCommandManager
 import net.horizonsend.ion.common.database.closeDatabase
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.database.openDatabase
+import net.horizonsend.ion.server.generation.CustomBiomeProvider
+import net.horizonsend.ion.server.generation.Generator
 import net.horizonsend.ion.common.loadConfiguration
 import net.starlegacy.database.schema.starships.PlayerStarshipData
 import net.starlegacy.legacyDisable
 import net.starlegacy.legacyEnable
+import org.bukkit.generator.BiomeProvider
+import org.bukkit.generator.ChunkGenerator
 import net.starlegacy.util.blockKeyX
 import net.starlegacy.util.blockKeyY
 import net.starlegacy.util.blockKeyZ

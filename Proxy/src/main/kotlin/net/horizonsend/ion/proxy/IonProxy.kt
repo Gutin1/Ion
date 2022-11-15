@@ -21,6 +21,7 @@ import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
 import java.util.concurrent.ForkJoinPool
+import net.horizonsend.ion.proxy.managers.reminderScheduler
 
 @Suppress("Unused")
 class IonProxy : Plugin() {
@@ -54,6 +55,9 @@ class IonProxy : Plugin() {
 	override fun onEnable() {
 		openDatabaseFuture.join()
 
+		// Start Repeating Tasks
+		reminderScheduler(configuration)
+
 		// Listener Registration
 		val pluginManager = proxy.pluginManager
 
@@ -80,6 +84,7 @@ class IonProxy : Plugin() {
 			jdaCommandManager.registerGuildCommand(DiscordInfoCommand())
 			jdaCommandManager.registerGuildCommand(PlayerListCommand(proxy))
 			jdaCommandManager.registerGuildCommand(ResyncCommand(configuration))
+			jdaCommandManager.registerGuildCommand(DiscordVoteCommand(configuration))
 
 			jdaCommandManager.build()
 

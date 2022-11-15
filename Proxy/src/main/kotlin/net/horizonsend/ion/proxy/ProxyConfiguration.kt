@@ -11,5 +11,7 @@ data class ProxyConfiguration(
 	val globalChannel: Long = 0,
 	val unlinkedRole: Long = 0,
 	val linkedRole: Long = 0,
-	val voteSites: Map<String, String> = mapOf("Example1.com" to "Example1Name", "Example2.com" to "Example2Name")
+	val voteSites: Map<String, String> = mapOf("Example1.com" to "Example1Name", "Example2.com" to "Example2Name"),
+	val reminderMessage: String,
+	val reminderDelay: Int
 )

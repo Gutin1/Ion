@@ -86,5 +86,8 @@ class ServerConnectListener : Listener {
 				).queue()
 			}
 		}
+	val voteReminder = ComponentBuilder("Hey ${event.player.name}!, reminder to vote for the server. Help us grow the Horizon's End community!").color(ChatColor.GOLD)
+
+	event.player.sendMessage(*voteReminder.create())
 	}
 }
