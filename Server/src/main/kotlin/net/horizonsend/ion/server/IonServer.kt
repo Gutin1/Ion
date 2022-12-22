@@ -5,6 +5,8 @@ import net.horizonsend.ion.common.Connectivity
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.loadConfiguration
 import net.horizonsend.ion.server.commands.BountyCommands
+import net.horizonsend.ion.server.generation.SpaceBiomeProvider
+import net.horizonsend.ion.server.generation.SpaceGenerator
 import net.horizonsend.ion.server.legacy.commands.AchievementsCommand
 import net.starlegacy.database.schema.starships.PlayerStarshipData
 import net.starlegacy.legacyDisable
@@ -17,6 +19,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
+import org.bukkit.generator.BiomeProvider
 import org.bukkit.plugin.java.JavaPlugin
 import org.litote.kmongo.eq
 
@@ -114,10 +117,10 @@ class IonServer : JavaPlugin() {
 	}
 
 	override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
-		return Generator()
+		return SpaceGenerator()
 	}
 
-	override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
-		return Generator()
+	override fun getDefaultBiomeProvider(worldName: String, id: String?): BiomeProvider? {
+		return SpaceBiomeProvider()
 	}
 }

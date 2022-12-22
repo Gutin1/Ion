@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.generation
+package net.horizonsend.ion.server.generation.configuration
 
 import org.bukkit.Material
 import org.spongepowered.configurate.objectmapping.ConfigSerializable

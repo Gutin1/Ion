@@ -1,8 +1,9 @@
-package net.horizonsend.ion.server.generation
+package net.horizonsend.ion.server.generation.populators
 
 import java.util.Random
 import net.horizonsend.ion.common.loadConfiguration
 import net.horizonsend.ion.server.IonServer
+import net.horizonsend.ion.server.generation.configuration.AsteroidConfiguration
 import net.starlegacy.util.add
 import org.bukkit.Location
 import org.bukkit.Material
