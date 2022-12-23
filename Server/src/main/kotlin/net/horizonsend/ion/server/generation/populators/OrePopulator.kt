@@ -46,7 +46,7 @@ class OrePopulator: BlockPopulator() {
 				val startMaterial: Material = limitedRegion.getType(location)
 				val ore = oreWeights()[worldRandom.nextInt(oreWeights().size)]
 
-				if (!configuration.blockPalettes.any { it.value.keys.contains(startMaterial) }) {
+				if (!configuration.blockPalettes.any { it.materials.keys.contains(startMaterial) }) {
 					continue
 				}
 
@@ -62,10 +62,10 @@ class OrePopulator: BlockPopulator() {
 	private fun oreWeights(): List<Material> {
 		val weightedList = mutableListOf<Material>()
 
-		for (ore in configuration.oreWeights) {
-			for (occurrence in ore.value downTo 0)
-				weightedList.add(ore.key)
-		}
+//		for (ore in configuration.oreWeights) {
+//			for (occurrence in ore.weight downTo 0)
+//				weightedList.add(ore.materials)
+//		} TODO
 
 		return weightedList
 	}

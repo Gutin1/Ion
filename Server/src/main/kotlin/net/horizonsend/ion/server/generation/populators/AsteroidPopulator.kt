@@ -9,6 +9,7 @@ import net.horizonsend.ion.common.loadConfiguration
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.generation.configuration.AsteroidConfiguration
 import net.horizonsend.ion.server.generation.configuration.AsteroidFeatures
+import net.horizonsend.ion.server.generation.configuration.Palette
 import net.minecraft.core.BlockPos
 import org.bukkit.Material
 import org.bukkit.generator.BlockPopulator
@@ -59,17 +60,20 @@ class AsteroidPopulator: BlockPopulator() {
 
 				if (asteroid.size + asteroidY > worldInfo.maxHeight) continue
 
-				populate(chunkX, chunkZ, limitedRegion, asteroid)
+				populate(worldInfo, chunkX, chunkZ, limitedRegion, asteroid)
 			}
 		}
 	}
 
 	private fun populate(
+		worldInfo: WorldInfo,
 		chunkX: Int,
 		chunkZ: Int,
 		limitedRegion: LimitedRegion,
 		asteroid: Asteroid,
 	) {
+		val noise = SimplexOctaveGenerator(Random(worldInfo.seed), 1)
+
 		val worldX = chunkX * 16
 		val worldZ = chunkZ * 16
 
@@ -90,15 +94,15 @@ class AsteroidPopulator: BlockPopulator() {
 					val ySquared = (yDouble - asteroid.location.y) * (yDouble - asteroid.location.y)
 					blockPos.y = y
 
-					asteroid.noise.setScale(0.15)
+					noise.setScale(0.15)
 
 					var fullNoise =
 						0.0 // Full noise is used as the radius of the asteroid, and it is offset by the noise of each block pos.
 
 					for (octave in 0..asteroid.octaves) {
-						asteroid.noise.setScale(0.015 * (octave + 1.0).pow(2.25))
+						noise.setScale(0.015 * (octave + 1.0).pow(2.25))
 
-						val offset = abs(asteroid.noise.noise(
+						val offset = abs(noise.noise(
 							xDouble,
 							yDouble,
 							zDouble,
@@ -121,9 +125,9 @@ class AsteroidPopulator: BlockPopulator() {
 
 					val weightedMaterials = materialWeights(asteroid.palette)
 
-					asteroid.noise.setScale(0.15)
+					noise.setScale(0.15)
 
-					val paletteSample = (((asteroid.noise.noise(
+					val paletteSample = (((noise.noise(
 						worldX + xDouble,
 						yDouble,
 						worldZ + zDouble,
@@ -157,13 +161,13 @@ class AsteroidPopulator: BlockPopulator() {
 			true
 		) + 1) / 2) * (weightedPalette.size - 1)).toInt()
 
-		val blockPalette: Map<Material, Int> = paletteWeights()[paletteSample]
+		val blockPalette: Palette = weightedPalette[paletteSample]
 
-		val size = random.nextDouble(5.0, configuration.baseAsteroidSize)
-		val ores = configuration.oreWeights
-		val octaves = configuration.baseAsteroidRoughness
+		val size = random.nextDouble(5.0, configuration.maxAsteroidSize)
+		val ores = configuration.oreWeights.random()
+		val octaves = configuration.maxAsteroidOctaves
 
-		return Asteroid(location, blockPalette, size, octaves, ores, noise)
+		return Asteroid(location, blockPalette, size, octaves, ores)
 	}
 
 	private fun parseDensity(worldInfo: WorldInfo, x: Double, y: Double, z: Double): Double {
@@ -179,35 +183,39 @@ class AsteroidPopulator: BlockPopulator() {
 		return densities.max()
 	}
 
-	private fun paletteWeights(): List<Map<Material, Int>> {
-		val weightedList = mutableListOf<Map<Material, Int>>()
+	/**
+	 * Weights the list of Palettes in the configuration by adding duplicate entries based on the weight.
+	 */
 
-		for (Palette in configuration.blockPalettes) {
-			for (occurrence in Palette.key downTo 0) {
-				weightedList.add(Palette.value)
+	private fun paletteWeights(): List<Palette> {
+		val weightedList = mutableListOf<Palette>()
+
+		for (palette in configuration.blockPalettes) {
+			for (occurrence in palette.weight..0) {
+				weightedList.add(palette)
 			}
 		}
 
 		return weightedList
 	}
 
-	private fun materialWeights(palette: Map<Material, Int>): List<Material> {
+	private fun materialWeights(palette: Palette): List<Material> {
 		val weightedList = mutableListOf<Material>()
 
-		for (Material in palette) {
-			for (occurrence in Material.value downTo 0) {
-				weightedList.add(Material.key)
+		for (material in palette.materials) {
+			for (occurrence in material.value downTo 0) {
+				weightedList.add(material.key)
 			}
 		}
 
 		return weightedList
 	}
+
 	data class Asteroid(
 		val location: BlockPos,
-		val palette: Map<Material, Int>,
+		val palette: Palette,
 		val size: Double,
 		val octaves: Int,
-		val ores: Map<Material, Int>,
-		val noise: SimplexOctaveGenerator
+		val ores: Palette
 	)
 }
