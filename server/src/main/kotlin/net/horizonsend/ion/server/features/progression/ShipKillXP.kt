@@ -3,8 +3,10 @@ package net.horizonsend.ion.server.features.progression
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.player.CombatNPCKillEvent
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.starship.active.ActiveStarship
 import net.horizonsend.ion.server.features.starship.active.ActiveStarships
+import net.horizonsend.ion.server.features.starship.damager.PlayerDamager
 import net.horizonsend.ion.server.features.starship.damager.damager
 import net.horizonsend.ion.server.features.starship.event.StarshipExplodeEvent
 import org.bukkit.entity.Entity
@@ -66,7 +68,8 @@ object ShipKillXP : IonServerComponent() {
 				Sink message factory: ${starship.sinkMessageFactory}
 			""".trimIndent()
 		)
-
+		val pilot = starship.controller.damager as? PlayerDamager
+		if(pilot != null) Achievement.GET_SUNK.rewardAdvancement(pilot.player)
 		if (IonServer.featureFlags.economy) starship.rewardsProviders.forEach { it.triggerReward() }
 		starship.sinkMessageFactory.execute()
 	}

@@ -20,12 +20,11 @@ import net.horizonsend.ion.common.utils.text.colors.HEColorScheme
 import net.horizonsend.ion.common.utils.text.template
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.cache.PlayerCache
 import net.horizonsend.ion.server.features.nations.region.Regions
 import net.horizonsend.ion.server.features.nations.region.types.RegionCapturableStation
 import net.horizonsend.ion.server.features.progression.SLXP
-import net.horizonsend.ion.server.features.progression.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
 import net.horizonsend.ion.server.features.starship.StarshipType
 import net.horizonsend.ion.server.features.starship.active.ActiveStarships
 import net.horizonsend.ion.server.features.starship.control.controllers.player.PlayerController
@@ -256,7 +255,7 @@ object StationSieges : IonServerComponent() {
 		Notify.chatAndGlobal(MiniMessage.miniMessage().deserialize("<gold>${player.name} of $nationName began a siege on Space Station ${station.name}! (Current Nation: $oldNationName)"))
 		Discord.sendMessage(IonServer.discordSettings.eventsChannel, "**${player.name}** of $nationName has initiated a siege on $oldNationName's Space Station ${station.name}")
 
-		player.rewardAchievement(Achievement.SIEGE_STATION)
+		Achievement.SIEGE_STATION.rewardAdvancement(player)
 	}
 
 	fun isUnderSiege(stationId: Oid<CapturableStation>) = sieges.any { it.stationId == stationId }
@@ -344,13 +343,13 @@ object StationSieges : IonServerComponent() {
 					if (RelationCache[playerNation, otherPlayerNation].ordinal >= NationRelation.Level.ALLY.ordinal) {
 
 						SLXP.addAsync(otherPlayer, NATIONS_BALANCE.capturableStation.siegerAllyXP)
-						player.rewardAchievement(Achievement.CAPTURE_STATION)
+						Achievement.CAPTURE_STATION.rewardAdvancement(player)
 					}
 				}
 			}
 		}
 
-		player.rewardAchievement(Achievement.CAPTURE_STATION)
+		Achievement.CAPTURE_STATION.rewardAdvancement(player)
 	}
 
 	private fun isInBigShip(player: Player): Boolean {

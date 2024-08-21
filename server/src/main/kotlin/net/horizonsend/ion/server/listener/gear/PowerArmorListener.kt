@@ -3,6 +3,7 @@ package net.horizonsend.ion.server.listener.gear
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import net.horizonsend.ion.common.database.cache.nations.NationCache
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.cache.PlayerCache
 import net.horizonsend.ion.server.features.gear.getPower
 import net.horizonsend.ion.server.features.gear.powerarmor.PowerArmorManager
@@ -182,6 +183,9 @@ object PowerArmorListener : SLEventListener() {
 			for (module in PowerArmorManager.getModules(item)) {
 				if (module == PowerArmorModule.ROCKET_BOOSTING) {
 					PowerArmorManager.toggleGliding(player)
+
+					Achievement.USE_ROCKET_BOOTS.rewardAdvancement(player)
+
 				}
 			}
 		}

@@ -30,6 +30,7 @@ import net.horizonsend.ion.common.utils.text.lineBreak
 import net.horizonsend.ion.common.utils.text.lineBreakWithCenterText
 import net.horizonsend.ion.common.utils.text.ofChildren
 import net.horizonsend.ion.common.utils.text.template
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.cache.trade.EcoStations
 import net.horizonsend.ion.server.features.nations.NATIONS_BALANCE
 import net.horizonsend.ion.server.features.nations.region.Regions
@@ -55,7 +56,6 @@ import org.bukkit.entity.Player
 import org.litote.kmongo.Id
 import org.litote.kmongo.deleteOneById
 import org.litote.kmongo.setValue
-import java.util.*
 
 @CommandAlias("spacestation|nspacestation|nstation|sstation|station|nationspacestation")
 object SpaceStationCommand : net.horizonsend.ion.server.command.SLCommand() {
@@ -184,6 +184,8 @@ object SpaceStationCommand : net.horizonsend.ion.server.command.SLCommand() {
 
 		create(sender, name, radius, cost, nation, NationSpaceStation.Companion)
 
+		Achievement.CREATE_NATION_STATION.rewardAdvancement(sender)
+
 		Notify.chatAndEvents(formatSpaceStationMessage(
 			"{0} established space station {1}, for their nation, {2}, in {3}",
 			text(sender.name, LIGHT_PURPLE),
@@ -201,6 +203,8 @@ object SpaceStationCommand : net.horizonsend.ion.server.command.SLCommand() {
 
 		create(sender, name, radius, cost, nation, SettlementSpaceStation.Companion)
 
+		Achievement.CREATE_SETTLEMENT_STATION.rewardAdvancement(sender)
+
 		Notify.chatAndEvents(formatSpaceStationMessage(
 			"{0} established space station {1}, for their settlement, {2}, in {3}",
 			text(sender.name, LIGHT_PURPLE),
@@ -214,6 +218,8 @@ object SpaceStationCommand : net.horizonsend.ion.server.command.SLCommand() {
 	@Suppress("unused")
 	fun createPersonal(sender: Player, name: String, radius: Int, @Optional cost: Int?) {
 		create(sender, name, radius, cost, sender.slPlayerId, PlayerSpaceStation.Companion)
+
+		Achievement.CREATE_PERSONAL_STATION.rewardAdvancement(sender)
 
 		Notify.chatAndEvents(formatSpaceStationMessage(
 			"{0} established the personal space station {1} in {2}",
@@ -268,6 +274,8 @@ object SpaceStationCommand : net.horizonsend.ion.server.command.SLCommand() {
 		)
 
 		VAULT_ECO.withdrawPlayer(sender, realCost.toDouble())
+
+		Achievement.CREATE_STATION.rewardAdvancement(sender)
 	}
 
 	private fun requireStationOwnership(player: SLPlayerId, station: CachedSpaceStation<*, *, *>) {

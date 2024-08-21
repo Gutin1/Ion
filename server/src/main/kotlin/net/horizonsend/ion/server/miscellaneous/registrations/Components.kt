@@ -3,6 +3,7 @@ package net.horizonsend.ion.server.miscellaneous.registrations
 import net.horizonsend.ion.common.IonComponent
 import net.horizonsend.ion.common.database.DBManager
 import net.horizonsend.ion.common.redis.RedisActions
+import net.horizonsend.ion.server.features.achievements.AchievementListeners
 import net.horizonsend.ion.server.features.ai.spawning.AISpawningManager
 import net.horizonsend.ion.server.features.ai.spawning.spawner.AISpawners
 import net.horizonsend.ion.server.features.cache.Caches
@@ -103,6 +104,7 @@ val components: List<IonComponent> = listOf(
 	PlayerXPLevelCache,
 	Levels,
 	SLXP,
+	AchievementListeners,
 
 	NPCTraits,
 	CombatNPCs,

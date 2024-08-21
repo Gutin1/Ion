@@ -27,6 +27,7 @@ import net.horizonsend.ion.common.utils.text.toCreditComponent
 import net.horizonsend.ion.server.command.GlobalCompletions.fromItemString
 import net.horizonsend.ion.server.command.GlobalCompletions.toItemString
 import net.horizonsend.ion.server.command.SLCommand
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.economy.bazaar.Bazaars
 import net.horizonsend.ion.server.features.economy.bazaar.Merchants
 import net.horizonsend.ion.server.features.economy.city.CityNPCs
@@ -181,6 +182,8 @@ object BazaarCommand : SLCommand() {
 					"Added $count of $itemString to listing in $cityName"
 				)
 			}
+
+			Achievement.SELL_BAZAAR.rewardAdvancement(sender)
 		}
 	}
 
@@ -337,6 +340,7 @@ object BazaarCommand : SLCommand() {
 			sender.success(
 				"Collected ${total.toCreditsString()} from $count listings"
 			)
+			//insert "bazaar profit" statistic tracker
 		}
 	}
 

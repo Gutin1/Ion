@@ -18,6 +18,7 @@ import net.horizonsend.ion.common.utils.text.toCreditComponent
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.command.GlobalCompletions.fromItemString
 import net.horizonsend.ion.server.command.economy.BazaarCommand
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.custom.items.CustomItems
 import net.horizonsend.ion.server.features.economy.city.TradeCities
 import net.horizonsend.ion.server.features.economy.city.TradeCityData
@@ -336,11 +337,13 @@ object Bazaars : IonServerComponent() {
 						.append(text(" (Price multiplied by ").color(NamedTextColor.YELLOW))
 						.append(text(priceMult).color(NamedTextColor.WHITE))
 						.append(text(" due to browsing remotely)").color(NamedTextColor.YELLOW))
+					Achievement.REMOTE_BUY_BAZAAR.rewardAdvancement(player)
 				}
 
 				player.sendMessage(
 					buyMessage
 				)
+				Achievement.BUY_BAZAAR.rewardAdvancement(player)
 			}
 		}
 	}

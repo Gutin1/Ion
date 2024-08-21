@@ -18,22 +18,21 @@ import net.horizonsend.ion.common.extensions.userErrorActionMessage
 import net.horizonsend.ion.common.utils.miscellaneous.toText
 import net.horizonsend.ion.common.utils.text.toComponent
 import net.horizonsend.ion.server.IonServerComponent
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.nations.gui.anvilInput
 import net.horizonsend.ion.server.features.nations.gui.playerClicker
 import net.horizonsend.ion.server.features.nations.gui.skullItem
 import net.horizonsend.ion.server.features.nations.region.Regions
 import net.horizonsend.ion.server.features.nations.region.types.RegionTerritory
-import net.horizonsend.ion.server.features.progression.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
 import net.horizonsend.ion.server.features.starship.PilotedStarships.getDisplayName
 import net.horizonsend.ion.server.features.starship.active.ActiveStarships
 import net.horizonsend.ion.server.features.starship.control.movement.PlayerStarshipControl.isHoldingController
 import net.horizonsend.ion.server.features.starship.control.movement.StarshipControl
 import net.horizonsend.ion.server.features.starship.event.StarshipComputerOpenMenuEvent
-import net.horizonsend.ion.server.features.starship.event.StarshipDetectedEvent
 import net.horizonsend.ion.server.miscellaneous.utils.MenuHelper
 import net.horizonsend.ion.server.miscellaneous.utils.PerPlayerCooldown
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.actualType
 import net.horizonsend.ion.server.miscellaneous.utils.isPilot
 import net.horizonsend.ion.server.miscellaneous.utils.slPlayerId
 import net.kyori.adventure.text.Component.text
@@ -251,8 +250,7 @@ object StarshipComputers : IonServerComponent() {
 					return@async
 				}
 
-				StarshipDetectedEvent(player, player.world).callEvent()
-				player.rewardAchievement(Achievement.DETECT_SHIP)
+				Achievement.DETECT_SHIP.rewardAdvancement(player)
 
 				DeactivatedPlayerStarships.updateState(data, state)
 
@@ -281,6 +279,8 @@ object StarshipComputers : IonServerComponent() {
 						)
 
 						player.success("Added $input as a pilot to starship.")
+						Achievement.ADD_PILOT.rewardAdvancement(player)
+						if(data.starshipType.actualType == StarshipType.BATTLECRUISER) Achievement.ADD_PILOT_BATTLECRUISER.rewardAdvancement(player)
 
 						Tasks.sync {
 							player.closeInventory()
@@ -289,6 +289,7 @@ object StarshipComputers : IonServerComponent() {
 
 					null
 				}
+
 			}.setName("Add Pilot"))
 
 			Tasks.async {

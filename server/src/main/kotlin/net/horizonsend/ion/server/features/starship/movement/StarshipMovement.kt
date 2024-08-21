@@ -16,7 +16,6 @@ import net.horizonsend.ion.server.features.starship.StarshipType
 import net.horizonsend.ion.server.features.starship.active.ActiveControlledStarship
 import net.horizonsend.ion.server.features.starship.active.ActiveStarship
 import net.horizonsend.ion.server.features.starship.active.ActiveStarships
-import net.horizonsend.ion.server.features.starship.event.EnterPlanetEvent
 import net.horizonsend.ion.server.features.starship.isFlyable
 import net.horizonsend.ion.server.features.starship.subsystem.misc.CryopodSubsystem
 import net.horizonsend.ion.server.features.world.IonWorld.Companion.ion
@@ -139,9 +138,9 @@ abstract class StarshipMovement(val starship: ActiveStarship, val newWorld: Worl
 			onComplete()
 		}
 
-		if (world1 != world2 && !world2.toString().contains("hyperspace", ignoreCase=true)) {
-			EnterPlanetEvent(world1, world2, starship.controller).callEvent()
-		}
+//		if (world1 != world2 && !world2.toString().contains("hyperspace", ignoreCase=true)) {
+//			EnterPlanetEvent(world1, world2, starship.controller).callEvent()
+//		}
 	}
 
 	private fun findPassengers(world1: World): List<Entity> {

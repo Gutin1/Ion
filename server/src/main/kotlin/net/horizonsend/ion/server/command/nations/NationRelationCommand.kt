@@ -18,6 +18,7 @@ import net.horizonsend.ion.common.utils.text.plainText
 import net.horizonsend.ion.common.utils.text.template
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.command.SLCommand
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.miscellaneous.utils.Discord
 import net.horizonsend.ion.server.miscellaneous.utils.Notify
 import net.kyori.adventure.audience.Audience
@@ -75,6 +76,16 @@ internal object NationRelationCommand : SLCommand() {
 		val otherWish = NationRelation.getRelationWish(otherNation, senderNation)
 
 		val actual = NationRelation.changeRelationWish(senderNation, otherNation, wish)
+
+		when(actual) {
+			NationRelation.Level.ALLY -> Achievement.RELATION_ALLY.rewardAdvancement(sender)
+			NationRelation.Level.FRIENDLY -> Achievement.RELATION_FRIENDLY.rewardAdvancement(sender)
+			NationRelation.Level.NEUTRAL -> Achievement.RELATION_NEUTRAL.rewardAdvancement(sender)
+			NationRelation.Level.UNFRIENDLY -> Achievement.RELATION_UNFRIENDLY.rewardAdvancement(sender)
+			NationRelation.Level.ENEMY -> Achievement.RELATION_ENEMY.rewardAdvancement(sender)
+			NationRelation.Level.NATION -> Achievement.RELATION_NATION.rewardAdvancement(sender)
+			NationRelation.Level.NONE -> {} //idc about "none" relation
+		}
 
 		val message = template(
 			text("{0} of {1} has made the relation wish {2} with the nation {3}. Their wish is {4}, so their relation is {5}", YELLOW),

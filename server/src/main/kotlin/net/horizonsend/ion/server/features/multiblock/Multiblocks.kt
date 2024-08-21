@@ -348,7 +348,7 @@ object Multiblocks : IonServerComponent() {
 				// it still matches so returned the cached one
 				return cached
 			} else {
-				// it no longer matches so remove it, and re-detect it afterwards
+				// it no longer matches so remove it, and re-detect it afterward
 				multiblockCache.remove(location)
 			}
 		}
@@ -408,7 +408,7 @@ object Multiblocks : IonServerComponent() {
 						if (!player.hasPermission(it)) return player.userError("You don't have permission to use that multiblock!")
 					}
 
-					event.player.rewardAchievement(Achievement.DETECT_MULTIBLOCK)
+					Achievement.DETECT_MULTIBLOCK.rewardAdvancement(player)
 
 					multiblock.setupSign(player, sign)
 					sign.persistentDataContainer.set(

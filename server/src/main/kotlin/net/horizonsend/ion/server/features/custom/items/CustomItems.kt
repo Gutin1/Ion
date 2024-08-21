@@ -1095,7 +1095,7 @@ abstract class CustomItem(val identifier: String) {
 	/** Swap Hands **/
 	open fun handleSwapHands(livingEntity: LivingEntity, itemStack: ItemStack) {}
 
-	/** Dispensed from a dispense **/
+	/** Dispensed from a dispenser **/
 	open fun handleDispense(dispenser: Dispenser, slot: Int) {}
 
 	abstract fun constructItemStack(): ItemStack

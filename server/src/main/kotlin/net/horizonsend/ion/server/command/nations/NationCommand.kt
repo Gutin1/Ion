@@ -29,6 +29,7 @@ import net.horizonsend.ion.common.utils.text.repeatString
 import net.horizonsend.ion.common.utils.text.template
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.command.SLCommand
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.cache.PlayerCache
 import net.horizonsend.ion.server.features.nations.NATIONS_BALANCE
 import net.horizonsend.ion.server.features.nations.region.Regions
@@ -37,7 +38,6 @@ import net.horizonsend.ion.server.features.nations.utils.isActive
 import net.horizonsend.ion.server.features.nations.utils.isInactive
 import net.horizonsend.ion.server.features.nations.utils.isSemiActive
 import net.horizonsend.ion.server.features.progression.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
 import net.horizonsend.ion.server.miscellaneous.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.newline
@@ -160,7 +160,7 @@ internal object NationCommand : SLCommand() {
 		Nation.create(name, settlement, color.asRGB())
 		VAULT_ECO.withdrawPlayer(sender, realCost.toDouble())
 
-		sender.rewardAchievement(Achievement.CREATE_NATION)
+		Achievement.CREATE_NATION.rewardAdvancement(sender)
 
 		Notify.chatAndGlobal(nationImportantMessageFormat(
 			"{0}, leader of the settlement {1}, founded the nation {2}!",
@@ -283,6 +283,8 @@ internal object NationCommand : SLCommand() {
 
 		Nation.removeInvite(nationId, settlementId)
 		Settlement.joinNation(settlementId, nationId)
+
+		Achievement.JOIN_NATION.rewardAdvancement(sender)
 
 		Notify.chatAndEvents(nationImportantMessageFormat("Settlement {0} joined the nation {1}", settlementName, nationName))
 	}
@@ -409,7 +411,7 @@ internal object NationCommand : SLCommand() {
 
 		Territory.setNation(territory.id, nationId)
 
-		sender.rewardAchievement(Achievement.CREATE_OUTPOST)
+		Achievement.CREATE_OUTPOST.rewardAdvancement(sender)
 
 		val nationName = getNationName(nationId)
 		Notify.chatAndEvents(nationImportantMessageFormat(

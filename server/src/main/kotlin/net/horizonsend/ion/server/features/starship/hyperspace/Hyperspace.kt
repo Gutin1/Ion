@@ -5,8 +5,7 @@ import net.horizonsend.ion.common.extensions.serverError
 import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.common.extensions.userErrorAction
 import net.horizonsend.ion.server.IonServerComponent
-import net.horizonsend.ion.server.features.progression.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.nations.utils.playSoundInRadius
 import net.horizonsend.ion.server.features.space.Space
 import net.horizonsend.ion.server.features.starship.StarshipType.PLATFORM
@@ -91,8 +90,8 @@ object Hyperspace : IonServerComponent() {
 		val warmup = (5.0 + log10(mass) * 2.0 + sqrt(speed.toDouble()) / 10.0).toInt()
 
 		warmupTasks[starship] = HyperspaceWarmup(starship, warmup, dest, hyperdrive, useFuel)
-
-		(starship.controller as? PlayerController)?.player?.rewardAchievement(Achievement.USE_HYPERSPACE)
+		val player = (starship.controller as? PlayerController)?.player ?: return
+		Achievement.ENTER_HYPERSPACE.rewardAdvancement(player)
 	}
 
 	fun cancelJumpWarmup(warmup: HyperspaceWarmup) {

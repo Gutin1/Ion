@@ -7,6 +7,7 @@ import net.horizonsend.ion.common.utils.discord.Embed
 import net.horizonsend.ion.common.utils.text.colors.HEColorScheme
 import net.horizonsend.ion.common.utils.text.template
 import net.horizonsend.ion.server.IonServer
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.features.tutorial.tutorials.IntroTutorial
 import net.horizonsend.ion.server.listener.SLEventListener
 import net.horizonsend.ion.server.miscellaneous.utils.Discord
@@ -14,6 +15,8 @@ import net.horizonsend.ion.server.miscellaneous.utils.Notify
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
@@ -42,7 +45,7 @@ object JoinLeaveListener : SLEventListener() {
 	private fun updateOrCreatePlayer(uuid: UUID, name: String) {
 		val id: SLPlayerId = uuid.slPlayerId
 		val data: SLPlayer? = SLPlayer.findById(id)
-
+		val player = Bukkit.getPlayer(uuid)
 		val now = Date(System.currentTimeMillis())
 
 		when {
@@ -65,6 +68,7 @@ object JoinLeaveListener : SLEventListener() {
 					description = "Welcome $name to the server!",
 					color = HEColorScheme.HE_LIGHT_ORANGE.value()
 				))
+				if (player != null) initializeRootAdvancements(player)
 
 				IntroTutorial.startTutorial(Bukkit.getPlayer(uuid) ?: return)
 
@@ -82,5 +86,12 @@ object JoinLeaveListener : SLEventListener() {
 				combine(setValue(SLPlayer::lastSeen, now), setValue(SLPlayer::lastKnownName, name))
 			)
 		}
+	}
+	private fun initializeRootAdvancements(player: Player) {
+		Achievement.EXPLORATION_ROOT.rewardAdvancement(player)
+		Achievement.LEVELING_ROOT.rewardAdvancement(player)
+		Achievement.MATERIALS_ROOT.rewardAdvancement(player)
+		Achievement.TECHNOLOGY_ROOT.rewardAdvancement(player)
+		Achievement.NATIONS_ROOT.rewardAdvancement(player)
 	}
 }

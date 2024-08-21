@@ -3,8 +3,7 @@ package net.horizonsend.ion.server.features.progression
 import net.horizonsend.ion.common.database.schema.misc.SLPlayer
 import net.horizonsend.ion.common.utils.text.template
 import net.horizonsend.ion.server.IonServerComponent
-import net.horizonsend.ion.server.features.progression.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.Achievement
 import net.horizonsend.ion.server.miscellaneous.utils.Notify
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.loadConfig
@@ -99,15 +98,28 @@ object Levels : IonServerComponent() {
 
 				Notify.chatAndGlobal(message)
 
-				when (newLevel) {
-					in 80..100 -> Achievement.LEVEL_80
-					in 40..100 -> Achievement.LEVEL_40
-					in 20..100 -> Achievement.LEVEL_20
-					in 10..100 -> Achievement.LEVEL_10
-					else -> null
-				}?.let {
-					player.rewardAchievement(it)
+				val achievement = when (newLevel) {
+					100 -> {
+						Achievement.LEVEL_100
+					}
+					in 80..100 -> {
+						Achievement.LEVEL_80
+					}
+					in 60..100 -> {
+						Achievement.LEVEL_60
+					}
+					in 40..100 -> {
+						Achievement.LEVEL_40
+					}
+					in 20..100 -> {
+						Achievement.LEVEL_20
+					}
+					in 10..100 -> {
+						Achievement.LEVEL_10
+					}
+					else -> Achievement.LEVELING_ROOT
 				}
+				achievement.rewardAdvancement(player)
 			}
 		}
 

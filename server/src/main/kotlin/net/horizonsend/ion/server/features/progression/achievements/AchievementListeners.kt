@@ -1,143 +1,138 @@
-package net.horizonsend.ion.server.features.progression.achievements
+package net.horizonsend.ion.server.features.achievements
 
-import net.horizonsend.ion.common.database.schema.misc.SLPlayer
-import net.horizonsend.ion.server.features.custom.items.CustomItems.ALUMINUM_INGOT
-import net.horizonsend.ion.server.features.custom.items.CustomItems.CHETHERITE
-import net.horizonsend.ion.server.features.custom.items.CustomItems.TITANIUM_INGOT
-import net.horizonsend.ion.server.features.custom.items.CustomItems.URANIUM
-import net.horizonsend.ion.server.features.starship.control.controllers.player.PlayerController
-import net.horizonsend.ion.server.features.starship.event.EnterPlanetEvent
-import net.horizonsend.ion.server.features.starship.event.StarshipDetectedEvent
-import net.horizonsend.ion.server.listener.SLEventListener
-import org.bukkit.Bukkit.getPlayer
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent
+import net.horizonsend.ion.server.IonServerComponent
+import net.horizonsend.ion.server.features.custom.items.CustomItems.customItem
+import net.horizonsend.ion.server.features.space.SpaceWorlds
+import net.horizonsend.ion.server.features.starship.event.StarshipDetectEvent
+import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomItems
+import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.vaultEconomy
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent
+import org.bukkit.event.player.PlayerAdvancementDoneEvent
+import org.bukkit.event.player.PlayerChangedWorldEvent
+import org.bukkit.inventory.ItemStack
 
-class AchievementListeners : SLEventListener() {
+object AchievementListeners : IonServerComponent() {
+
+	override fun onEnable() {
+		checkBalances()
+	}
+
 	@EventHandler
+	@Suppress("Unused")
+	fun onPlayerAdvancementDoneEvent(event: PlayerAdvancementDoneEvent){
+		/* listener for the final reward of all multi-criterion advancements */
+
+		val key = event.advancement.key.key //String
+		when(key){
+			Achievement.OBTAIN_ALL_CORES.key -> {
+				Achievement.OBTAIN_ALL_CORES.rewardAdvancement(event.player)
+			}
+			Achievement.OBTAIN_ALL_POWER_ARMOR.key -> {
+				Achievement.OBTAIN_ALL_POWER_ARMOR.rewardAdvancement(event.player)
+			}
+			Achievement.VISIT_ALL_PLANETS.key -> {
+				Achievement.VISIT_ALL_PLANETS.rewardAdvancement(event.player)
+			}
+			Achievement.VISIT_ALL_SYSTEMS.key -> {
+				Achievement.VISIT_ALL_SYSTEMS.rewardAdvancement(event.player)
+			}
+
+		}
+	}
+
+	@EventHandler
+	@Suppress("Unused")
 	fun onPlayerDeathEvent(event: PlayerDeathEvent) {
 		val killer = event.entity.killer ?: return // Only player kills
-		val victim = event.player
-
-		if (killer !== victim) killer.rewardAchievement(Achievement.KILL_PLAYER) // Kill a Player Achievement
+		if (killer !== event.player) Achievement.KILL_PLAYER.rewardAdvancement(killer)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	fun onDetectShip(event: StarshipDetectedEvent) {
-		event.player.rewardAchievement(Achievement.DETECT_SHIP)
+	@Suppress("Unused")
+	fun onDetectShip(event: StarshipDetectEvent) {
+		Achievement.DETECT_SHIP.rewardAdvancement(event.player)
 	}
 
 	@EventHandler
 	@Suppress("Unused")
-	fun onPlayerAttemptPickupItemEvent(event: PlayerAttemptPickupItemEvent) {
-		event.player.rewardAchievement(
-			when (event.item.itemStack) {
-				TITANIUM_INGOT.constructItemStack() -> Achievement.ACQUIRE_TITANIUM
-				ALUMINUM_INGOT.constructItemStack() -> Achievement.ACQUIRE_ALUMINIUM
-				CHETHERITE.constructItemStack() -> Achievement.ACQUIRE_CHETHERITE
-				URANIUM.constructItemStack() -> Achievement.ACQUIRE_URANIUM
-				else -> return
-			}
-		)
+	fun onPlayerChangedWorldEvent(event: PlayerChangedWorldEvent){
+		val player = event.player
+		if(SpaceWorlds.contains(player.world)){
+			Achievement.ENTER_SPACE.rewardAdvancement(player)
+		}
+		val advancement = try{
+			Achievement.valueOf("VISIT_${(player.world.name).uppercase()}")
+		}catch(_: IllegalArgumentException){
+			Achievement.EXPLORATION_ROOT
+		}
+		advancement.rewardAdvancement(player)
 	}
 
 	@EventHandler
 	@Suppress("Unused")
-	fun onPlayerAttemptPickupItemEvent(event: InventoryDragEvent) {
-		val item = event.cursor ?: return
-		val player = getPlayer(event.view.player.uniqueId) ?: return
-
-		player.rewardAchievement(
-			when (item) {
-				TITANIUM_INGOT.constructItemStack() -> Achievement.ACQUIRE_TITANIUM
-				ALUMINUM_INGOT.constructItemStack() -> Achievement.ACQUIRE_ALUMINIUM
-				CHETHERITE.constructItemStack() -> Achievement.ACQUIRE_CHETHERITE
-				URANIUM.constructItemStack() -> Achievement.ACQUIRE_URANIUM
-				else -> return
-			}
-		)
+	fun onPlayerAttemptPickupItemEvent(event: PlayerInventorySlotChangeEvent) {
+		val player = event.player
+		val item = event.newItemStack
+		detectObtainedItem(player, item)
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	fun onEnterPlanetEvent(event: EnterPlanetEvent) {
-		val player = (event.controller as? PlayerController)?.player ?: return
-		val playerData = SLPlayer[player.uniqueId]!!
+/*  currently using PlayerChangedWorldEvent, EnterPlanetEvent may be used later */
 
-		player.rewardAchievement(
-			when (event.newWorld.name.lowercase()) {
-				"chimgara" -> Achievement.PLANET_CHIMGARA
-				"chandra" -> Achievement.PLANET_CHANDRA
-				"damkoth" -> Achievement.PLANET_DAMKOTH
-				"vask" -> Achievement.PLANET_VASK
-				"gahara" -> Achievement.PLANET_GAHARA
-				"isik" -> Achievement.PLANET_ISIK
-				"krio" -> Achievement.PLANET_KRIO
-				"herdoli" -> Achievement.PLANET_HERDOLI
-				"ilius" -> Achievement.PLANET_ILIUS
-				"aerach" -> Achievement.PLANET_AERACH
-				"rubaciea" -> Achievement.PLANET_RUBACIEA
-				"aret" -> Achievement.PLANET_ARET
-				"luxiterna" -> Achievement.PLANET_LUXITERNA
-				"turms" -> Achievement.PLANET_TURMS
-				"lioda" -> Achievement.PLANET_LIODA
-				"qatra" -> Achievement.PLANET_QATRA
-				"kovfefe" -> Achievement.PLANET_KOVFEFE
-				else -> return
-			}
-		) {
-			val achievements = playerData.achievements.map { Achievement.valueOf(it) }
+//	@EventHandler(priority = EventPriority.LOWEST)
+//	fun onEnterPlanetEvent(event: EnterPlanetEvent) {
+//		val player = (event.controller as? PlayerController)?.player ?: return
+//		val playerData = SLPlayer[player.uniqueId]!!
+//
+//		when (event.newWorld.name.lowercase()) {
+//
+//			else -> return
+//		}
+//
+//	}
 
-			if (achievements.containsAll(
-					listOf(
-						Achievement.PLANET_CHANDRA,
-						Achievement.PLANET_LUXITERNA,
-						Achievement.PLANET_HERDOLI,
-						Achievement.PLANET_RUBACIEA,
-						Achievement.PLANET_ILIUS
-					)
-				)
-			) {
-				player.rewardAchievement(Achievement.SYSTEM_ASTERI)
-			}
-
-			if (achievements.containsAll(
-					listOf(
-						Achievement.PLANET_ARET,
-						Achievement.PLANET_VASK,
-						Achievement.PLANET_AERACH,
-						Achievement.PLANET_GAHARA
-					)
-				)
-			) {
-				player.rewardAchievement(Achievement.SYSTEM_REGULUS)
-			}
-
-			if (achievements.containsAll(
-					listOf(
-						Achievement.PLANET_QATRA,
-						Achievement.PLANET_LIODA,
-						Achievement.PLANET_KOVFEFE,
-						Achievement.PLANET_TURMS
-					)
-				)
-			) {
-				player.rewardAchievement(Achievement.SYSTEM_SIRIUS)
-			}
-
-			if (achievements.containsAll(
-					listOf(
-						Achievement.PLANET_DAMKOTH,
-						Achievement.PLANET_CHIMGARA,
-						Achievement.PLANET_KRIO,
-						Achievement.PLANET_ISIK
-					)
-				)
-			) {
-				player.rewardAchievement(Achievement.SYSTEM_ILIOS)
+	private fun checkBalances() {
+		Tasks.asyncRepeat(20L, 20L){
+			for (player in Bukkit.getOnlinePlayers()) {
+				val num = vaultEconomy?.getBalance(player) ?: continue
+				when {
+					num >= 10000000.0 -> Achievement.BAL_10M.rewardAdvancement(player)
+					num >= 1000000.0 -> Achievement.BAL_1M.rewardAdvancement(player)
+					num >= 500000.0 -> Achievement.BAL_500K.rewardAdvancement(player)
+					num >= 100000.0 -> Achievement.BAL_100K.rewardAdvancement(player)
+					num >= 50000.0 -> Achievement.BAL_50K.rewardAdvancement(player)
+					num >= 10000.0 -> Achievement.BAL_10K.rewardAdvancement(player)
+				}
 			}
 		}
+	}
+
+	private fun detectObtainedItem(player: Player, item: ItemStack){
+		/* include legacy custom items (like power armor) */
+		val legacyCustomItem = CustomItems[item]
+		val newCustomItem = item.customItem
+
+		val customItemName: String? = legacyCustomItem?.id?.uppercase() ?: newCustomItem?.identifier?.uppercase()
+
+		//if(customItemName != null) println("picked up custom item: $customItemName")
+
+		//vanilla items
+		val itemName = if(customItemName == null) (item.type.name.uppercase()) else null
+		//if(itemName != null) println("picked up item: $itemName")
+
+		/* try custom item name, if null then vanilla item name, if null then return (somehow? IDK) */
+		val name = customItemName ?: itemName ?: return
+
+		val advancement = try{
+			Achievement.valueOf("OBTAIN_${name}")
+		}catch(_: IllegalArgumentException){
+			Achievement.MATERIALS_ROOT
+		}
+		advancement.rewardAdvancement(player)
 	}
 }
