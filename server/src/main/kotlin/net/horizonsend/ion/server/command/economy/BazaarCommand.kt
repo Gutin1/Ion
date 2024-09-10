@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import net.horizonsend.ion.common.database.schema.economy.BazaarItem
 import net.horizonsend.ion.common.database.schema.economy.CityNPC
+import net.horizonsend.ion.common.database.schema.misc.SLPlayerStatistic
 import net.horizonsend.ion.common.database.schema.nations.Settlement
 import net.horizonsend.ion.common.extensions.information
 import net.horizonsend.ion.common.extensions.success
@@ -340,7 +341,14 @@ object BazaarCommand : SLCommand() {
 			sender.success(
 				"Collected ${total.toCreditsString()} from $count listings"
 			)
-			//insert "bazaar profit" statistic tracker
+			Tasks.async{
+				SLPlayerStatistic.incStatistic(
+					senderId,
+					SLPlayerStatistic::bazaarProfit,
+					total
+				)
+				if(SLPlayerStatistic.getBazaarProfit(senderId) > 1000000) Achievement.MILLION_BAZAAR_PROFIT.rewardAdvancement(sender)
+			}
 		}
 	}
 

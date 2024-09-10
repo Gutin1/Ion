@@ -29,7 +29,7 @@ enum class Achievement(
 		 * 1. create a new advancement's {name}.json file in the horizons end datapack......pilot_ship.json
 		 * 2. create new enum in this file..................................................PILOT_SHIP(...)
 		 * key = folder/json_file_name......................................................"exploration/pilot_ship"
-		 * criteria = generally good to match to file_name.................................."pilot_ship"
+		 * criteria = good practice to match to file name..................................."pilot_ship"
 		 * 3. set criteria to "minecraft:impossible"........................................"pilot_ship": { "minecraft:impossible" }
 	 	 * 4. grant advancement in its respective area within the code......................Achievements.PILOT_SHIP.rewardAdvancement(player)
 
@@ -72,7 +72,7 @@ enum class Achievement(
 //	TEMPLATE("title", "description", 0, 0, 0, "key", "criteria", false),
 	/** -------------------- Exploration -------------------- **/
 	EXPLORATION_ROOT(null, null, 0, 0, 0, "exploration/root", "root", false), // s1ice
-	COMPLETE_TUTORIAL("Space Cadet", "Complete the Tutorial", 1000, 250, 0, "exploration/complete_tutorial", "complete_tutorial", false), // Wither
+//	COMPLETE_TUTORIAL("Space Cadet", "Complete the Tutorial", 1000, 250, 0, "exploration/complete_tutorial", "complete_tutorial", false), // Wither
 	BUY_SHIP("Fresh Off the Lot", "Buy a ship from the ship dealer", 250, 100, 0, "exploration/buy_ship", "buy_ship", false), // Sciath + Astral
 	DETECT_SHIP("All in Working Order", "Detect a starship", 100, 50, 0, "exploration/detect_ship", "detect_ship", false), // Vandrayk
 	PILOT_SHIP("When Players Fly", "Pilot a starship", 100, 50, 0, "exploration/pilot_ship", "pilot_ship", false), // s1ice
@@ -81,9 +81,9 @@ enum class Achievement(
 	ENTER_SPACE("Outer Space!", "Enter Space", 250, 100, 0, "exploration/enter_space", "enter_space", false), // s1ice
 	CREATE_FLEET("Squad Up", "Create a Fleet", 100, 100, 0, "exploration/create_fleet", "create_fleet", false), // s1ice
 	ENTER_HYPERSPACE("Ludicrous Speed!", "Use hyperspace", 250, 75, 8, "exploration/enter_hyperspace", "enter_hyperspace", false), // Liluzivert
-	COMPLETE_COMMISSION("Easy Money", "Complete a commission", 250, 100, 0, "exploration/complete_commission", "complete_commission", false), // s1ice
-	THREE_DAY_STREAK("On a Roll", "Have a 3 day commission streak", 500, 250, 0, "exploration/3_day_streak", "3_day_streak", false), // s1ice
-	MAX_COMMISSION_STREAK("Starstruck", "Max out your commission streak bonus", 1000, 500, 0, "exploration/max_commission_streak", "max_commission_streak", false), // s1ice
+//	COMPLETE_COMMISSION("Easy Money", "Complete a commission", 250, 100, 0, "exploration/complete_commission", "complete_commission", false), // s1ice
+//	THREE_DAY_STREAK("On a Roll", "Have a 3-day commission streak", 500, 250, 0, "exploration/3_day_streak", "3_day_streak", false), // s1ice
+//	MAX_COMMISSION_STREAK("Starstruck", "Max out your commission streak bonus", 1000, 500, 0, "exploration/max_commission_streak", "max_commission_streak", false), // s1ice
 	BUY_CRATE("Order Up!", "Buy crates from an Exporter", 500, 125, 0, "exploration/buy_crate", "buy_crate", false), // s1ice
 	SELL_CRATE("Space Trucking", "Sell crates to an Importer", 500, 125, 0, "exploration/sell_crate", "sell_crate", false), // Astral
 
@@ -106,12 +106,15 @@ enum class Achievement(
 	ADD_PILOT_BATTLECRUISER("Don't Scratch the Paint", "Add a player as a pilot on a Battlecruiser", 100, 100, 0, "exploration/add_pilot_battlecruiser", "add_pilot_battlecruiser", false), // s1ice
 	BUY_BAZAAR("Ooh, Shiny!", "Buy something from a bazaar", 0, 0, 0, "exploration/buy_bazaar", "buy_bazaar", false), // s1ice
 	REMOTE_BUY_BAZAAR("Same-Day Delivery", "Remotely buy something from a Bazaar", 100, 100, 0, "exploration/remote_buy_bazaar", "remote_buy_bazaar", false), // s1ice
-	SELL_BAZAAR("Community Market", "Put up an item listing on the bazaar", 0, 0, 0, "exploration/sell_bazaar", "sell_bazaar", false), // s1ice
+	SELL_BAZAAR("Community Market", "Put up an item up on the bazaar", 0, 0, 0, "exploration/sell_bazaar", "sell_bazaar", false), // s1ice
 	MILLION_BAZAAR_PROFIT("Capitalist", "Profit 1 million credits from bazaar listings", 1000, 500, 0, "exploration/1_mil_bazaar_profit", "1_mil_bazaar_profit", false), // s1ice
 	KILL_PLAYER("Carried Away", "Kill a player", 250, 100, 0, "exploration/kill_player", "kill_player", false), // Astral
 	KILL_CAPTAIN("Mutiny", "Kill a player piloting a ship, as their passenger", 500, 250, 0, "exploration/kill_captain", "kill_captain", false), // s1ice
 	KILL_SETTLEMENT_LEADER("Caesar", "Kill a settlement leader, in their settlement", 500, 250, 0, "exploration/kill_settlement_leader", "kill_settlement_leader", false), // s1ice
 	OBTAIN_PLAYER_HEAD("Beheaded!", "Obtain a Player Head", 250, 100, 0, "exploration/obtain_player_head", "obtain_player_head", false), // s1ice
+	SINK_AI_SHIP("Enemy Down!", "Sink an AI ship", 250, 100, 0, "exploration/sink_ai", "sink_ai", false), // s1ice
+	SINK_ALIEN_SHIP("Next-Level Threat", "Sink an Alien AI ship", 500, 250, 0, "exploration/sink_alien_ship", "sink_alien_ship", false), // s1ice
+	SINK_1K_AI_SHIPS("Terminator", "Kill 1000 AI ships", 10000, 5000, 0, "exploration/kill_1k_ai_ships", "kill_1k_ai_ships", false), // s1ice
 
 	/** ---------------------------------------- EXPLORATION ---------------------------------------- **/
 	LEVELING_ROOT(null, null, 0, 0, 0, "leveling/root", "root", false), // s1ice
@@ -132,45 +135,45 @@ enum class Achievement(
 	MATERIALS_ROOT(null, null, 0, 0, 0, "materials/root", "root", false), // s1ice
 	OBTAIN_CHETHERITE("Unleaded", "Obtain Chetherite", 0, 0, 0, "materials/obtain_chetherite","obtain_chetherite", false), // Gutin
 	OBTAIN_URANIUM("Split the atom", "Obtain Uranium", 0, 0, 0, "materials/obtain_titanium","obtain_aluminum", false), // Astral
-	OBTAIN_ALUMINIUM_INGOT("Pronounced Aluminium", "Obtain Aluminium", 0, 0, 0, "materials/obtain_aluminum","obtain_aluminum", false), // Gutin
+	OBTAIN_ALUMINUM_INGOT("Pronounced Aluminum", "Obtain Aluminum", 0, 0, 0, "materials/obtain_aluminum","obtain_aluminum", false), // Gutin
 	OBTAIN_TITANIUM_INGOT("Future's Material", "Obtain Titanium", 0, 0, 0, "materials/obtain_titanium","obtain_titanium", false), // Gutin + Astral
 
 	//circuitry line
-	OBTAIN_CIRCUITRY(			null, null, 0, 0, 0, "materials/c_obtain_circuitry",			"obtain_circuitry", 		  false), // s1ice
-	OBTAIN_CIRCUIT_BOARD(		null, null, 0, 0, 0, "materials/c_obtain_circuit_board",		"obtain_circuit_board", 	  false), // s1ice
-	OBTAIN_MOTHERBOARD(			null, null, 0, 0, 0, "materials/c_obtain_motherboard",			"obtain_motherboard", 		  false), // s1ice
-	OBTAIN_SUPERCONDUCTOR(		null, null, 0, 0, 0, "materials/c_obtain_superconductor",		"obtain_superconductor", 	  false), // s1ice
-	OBTAIN_SUPERCONDUCTOR_BLOCK(null, null, 0, 0, 0, "materials/c_obtain_superconductor_block",	"obtain_superconductor_block",false), // s1ice
-	OBTAIN_SUPERCONDUCTOR_CORE(	null, null, 0, 0, 0, "materials/c_obtain_superconductor_core",	"obtain_superconductor_core", false), // s1ice
+	OBTAIN_CIRCUITRY(			null, null, 0, 0, 0, "materials/c_obtain_circuitry",			"c_obtain_circuitry",			false), // s1ice
+	OBTAIN_CIRCUIT_BOARD(		null, null, 0, 0, 0, "materials/c_obtain_circuit_board",		"c_obtain_circuit_board",		false), // s1ice
+	OBTAIN_MOTHERBOARD(			null, null, 0, 0, 0, "materials/c_obtain_motherboard",			"c_obtain_motherboard",			false), // s1ice
+	OBTAIN_SUPERCONDUCTOR(		null, null, 0, 0, 0, "materials/c_obtain_superconductor",		"c_obtain_superconductor",		false), // s1ice
+	OBTAIN_SUPERCONDUCTOR_BLOCK(null, null, 0, 0, 0, "materials/c_obtain_superconductor_block",	"c_obtain_superconductor_block",false), // s1ice
+	OBTAIN_SUPERCONDUCTOR_CORE(	null, null, 0, 0, 0, "materials/c_obtain_superconductor_core",	"c_obtain_superconductor_core",	false), // s1ice
 
 	//reactive line
-	OBTAIN_REACTIVE_HOUSING(   null, null, 0, 0, 0, "materials/r_obtain_reactive_housing",	 "obtain_reactive_housing", 	false), // s1ice
-	OBTAIN_REACTIVE_COMPONENT( null, null, 0, 0, 0, "materials/r_obtain_reactive_component", "obtain_reactive_component", 	false), // s1ice
-	OBTAIN_REACTIVE_PLATING(   null, null, 0, 0, 0, "materials/r_obtain_reactive_plating",	 "obtain_reactive_plating", 	false), // s1ice
-	OBTAIN_REACTIVE_CHASSIS(   null, null, 0, 0, 0, "materials/r_obtain_reactive_chassis",	 "obtain_reactive_chassis", 	false), // s1ice
-	OBTAIN_REACTIVE_MEMBRANE(  null, null, 0, 0, 0, "materials/r_obtain_reactive_membrane",	 "obtain_reactive_membrane", 	false), // s1ice
-	OBTAIN_REACTIVE_ASSEMBLY(  null, null, 0, 0, 0, "materials/r_obtain_reactive_assembly",	 "obtain_reactive_assembly",	false), // s1ice
-	OBTAIN_FABRICATED_ASSEMBLY(null, null, 0, 0, 0, "materials/r_obtain_fabricated_assembly","obtain_fabricated_assembly", 	false), // s1ice
-	OBTAIN_REACTOR_CONTROL(    null, null, 0, 0, 0, "materials/r_obtain_reactor_control",	 "obtain_reactor_control", 		false), // s1ice
+	OBTAIN_REACTIVE_HOUSING(   null, null, 0, 0, 0, "materials/r_obtain_reactive_housing",	 "r_obtain_reactive_housing", 	false), // s1ice
+	OBTAIN_REACTIVE_COMPONENT( null, null, 0, 0, 0, "materials/r_obtain_reactive_component", "r_obtain_reactive_component", false), // s1ice
+	OBTAIN_REACTIVE_PLATING(   null, null, 0, 0, 0, "materials/r_obtain_reactive_plating",	 "r_obtain_reactive_plating", 	false), // s1ice
+	OBTAIN_REACTIVE_CHASSIS(   null, null, 0, 0, 0, "materials/r_obtain_reactive_chassis",	 "r_obtain_reactive_chassis", 	false), // s1ice
+	OBTAIN_REACTIVE_MEMBRANE(  null, null, 0, 0, 0, "materials/r_obtain_reactive_membrane",	 "r_obtain_reactive_membrane", 	false), // s1ice
+	OBTAIN_REACTIVE_ASSEMBLY(  null, null, 0, 0, 0, "materials/r_obtain_reactive_assembly",	 "r_obtain_reactive_assembly",	false), // s1ice
+	OBTAIN_FABRICATED_ASSEMBLY(null, null, 0, 0, 0, "materials/r_obtain_fabricated_assembly","r_obtain_fabricated_assembly",false), // s1ice
+	OBTAIN_REACTOR_CONTROL(    null, null, 0, 0, 0, "materials/r_obtain_reactor_control",	 "r_obtain_reactor_control", 	false), // s1ice
 
 	//steel line
-	OBTAIN_STEEL_INGOT(		null, null, 0, 0, 0, "materials/s_obtain_steel",			"obtain_steel", 			false), // s1ice
-	OBTAIN_STEEL_BLOCK(		null, null, 0, 0, 0, "materials/s_obtain_steel_block",		"obtain_steel_block", 		false), // s1ice
-	OBTAIN_STEEL_PLATE(		null, null, 0, 0, 0, "materials/s_obtain_steel_plate",		"obtain_steel_plate", 		false), // s1ice
-	OBTAIN_STEEL_CHASSIS(	null, null, 0, 0, 0, "materials/s_obtain_steel_chassis",	"obtain_steel_chassis", 	false), // s1ice
-	OBTAIN_STEEL_MODULE(	null, null, 0, 0, 0, "materials/s_obtain_steel_module",		"obtain_steel_module", 		false), // s1ice
-	OBTAIN_STEEL_ASSEMBLY(	null, null, 0, 0, 0, "materials/s_obtain_steel_assembly",	"obtain_steel_assembly", 	false), // s1ice
-	OBTAIN_REINFORCED_FRAME(null, null, 0, 0, 0, "materials/s_obtain_reinforced_frame", "obtain_reinforced_frame", 	false), // s1ice
-	OBTAIN_REACTOR_FRAME(	null, null, 0, 0, 0, "materials/s_obtain_reactor_frame",	"obtain_reactor_frame", 	false), // s1ice
+	OBTAIN_STEEL_INGOT(		null, null, 0, 0, 0, "materials/s_obtain_steel",			"s_obtain_steel", 				false), // s1ice
+	OBTAIN_STEEL_BLOCK(		null, null, 0, 0, 0, "materials/s_obtain_steel_block",		"s_obtain_steel_block", 		false), // s1ice
+	OBTAIN_STEEL_PLATE(		null, null, 0, 0, 0, "materials/s_obtain_steel_plate",		"s_obtain_steel_plate", 		false), // s1ice
+	OBTAIN_STEEL_CHASSIS(	null, null, 0, 0, 0, "materials/s_obtain_steel_chassis",	"s_obtain_steel_chassis", 		false), // s1ice
+	OBTAIN_STEEL_MODULE(	null, null, 0, 0, 0, "materials/s_obtain_steel_module",		"s_obtain_steel_module", 		false), // s1ice
+	OBTAIN_STEEL_ASSEMBLY(	null, null, 0, 0, 0, "materials/s_obtain_steel_assembly",	"s_obtain_steel_assembly", 		false), // s1ice
+	OBTAIN_REINFORCED_FRAME(null, null, 0, 0, 0, "materials/s_obtain_reinforced_frame", "s_obtain_reinforced_frame", 	false), // s1ice
+	OBTAIN_REACTOR_FRAME(	null, null, 0, 0, 0, "materials/s_obtain_reactor_frame",	"s_obtain_reactor_frame", 		false), // s1ice
 
 	//uranium line
-	OBTAIN_ENRICHED_URANIUM(	  null, null, 0, 0, 0, "materials/u_obtain_enriched_uranium",		"obtain_enriched_uranium", 		false), // s1ice
-	OBTAIN_ENRICHED_URANIUM_BLOCK(null, null, 0, 0, 0, "materials/u_obtain_enriched_uranium_block", "obtain_enriched_uranium_block",false), // s1ice
-	OBTAIN_URANIUM_CORE(		  null, null, 0, 0, 0, "materials/u_obtain_uranium_core",			"obtain_uranium_core", 			false), // s1ice
-	OBTAIN_URANIUM_ROD(			  null, null, 0, 0, 0, "materials/u_obtain_uranium_ro",				"obtain_uranium_rod", 			false), // s1ice
-	OBTAIN_FUEL_ROD_CORE(		  null, null, 0, 0, 0, "materials/u_obtain_fuel_rod_core",			"obtain_fuel_rod_core", 		false), // s1ice
-	OBTAIN_FUEL_CELL(			  null, null, 0, 0, 0, "materials/u_obtain_fuel_cell",				"obtain_fuel_cell", 			false), // s1ice
-	OBTAIN_FUEL_CONTROL(		  null, null, 0, 0, 0, "materials/u_obtain_fuel_control",			"obtain_fuel_control", 			false), // s1ice
+	OBTAIN_ENRICHED_URANIUM(	  null, null, 0, 0, 0, "materials/u_obtain_enriched_uranium",		"u_obtain_enriched_uranium", 		false), // s1ice
+	OBTAIN_ENRICHED_URANIUM_BLOCK(null, null, 0, 0, 0, "materials/u_obtain_enriched_uranium_block", "u_obtain_enriched_uranium_block",	false), // s1ice
+	OBTAIN_URANIUM_CORE(		  null, null, 0, 0, 0, "materials/u_obtain_uranium_core",			"u_obtain_uranium_core", 			false), // s1ice
+	OBTAIN_URANIUM_ROD(			  null, null, 0, 0, 0, "materials/u_obtain_uranium_ro",				"u_obtain_uranium_rod", 			false), // s1ice
+	OBTAIN_FUEL_ROD_CORE(		  null, null, 0, 0, 0, "materials/u_obtain_fuel_rod_core",			"u_obtain_fuel_rod_core", 			false), // s1ice
+	OBTAIN_FUEL_CELL(			  null, null, 0, 0, 0, "materials/u_obtain_fuel_cell",				"u_obtain_fuel_cell", 				false), // s1ice
+	OBTAIN_FUEL_CONTROL(		  null, null, 0, 0, 0, "materials/u_obtain_fuel_control",			"u_obtain_fuel_control", 			false), // s1ice
 
 	/** ---------------------------------------- TECHNOLOGY ---------------------------------------- **/
 	TECHNOLOGY_ROOT(null, null, 0, 0, 0, "technology/root", "root", false), // s1ice
@@ -229,7 +232,16 @@ enum class Achievement(
 	OBTAIN_POWER_ARMOR_CHESTPLATE(	null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_chestplate",false), // s1ice
 	OBTAIN_POWER_ARMOR_LEGGINGS(	null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_leggings", 	false), // s1ice
 	OBTAIN_POWER_ARMOR_BOOTS(		null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_boots", 	false), // s1ice
-
+/* soon(tm)
+	SINK_EACH_AI_SHIP("Man Ms. Machine", "Sink at least one AI ship from every faction", 5000, 2500, 0, "", "", true), // s1ice
+	SINK_吃饭人(					null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_吃饭人", 				false), // s1ice
+	SINK_WATCHERS(				null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_watchers", 				false), // s1ice
+	SINK_MINING_GUILD(			null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_mining_guild", 			false), // s1ice
+	SINK_PERSEUS_EXPLORERS(		null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_perseus_explorers", 	false), // s1ice
+	SINK_SYSTEM_DEFENSE_FORCES( null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_system_defense_forces", false), // s1ice
+	SINK_TSAII_RAIDERS(			null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_tsaii_raiders", 		false), // s1ice
+	SINK_PIRATES(				null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_pirates", 				false), // s1ice
+*/
 	VISIT_ALL_PLANETS("Mr. Worldwide", "Visit Every Planet", 7500, 2500, 0, "", "", true), // s1ice
 	VISIT_AERACH(	null, null, 100, 125, 0, "exploration/visit_all_planets", "visit_aerach", 	false), // s1ice
 	VISIT_ARET(		null, null, 100, 125, 0, "exploration/visit_all_planets", "visit_aret", 	false), // s1ice
@@ -284,18 +296,20 @@ enum class Achievement(
 		if (chetheriteReward > 0) {
 			player.inventory.addItem(CHETHERITE.constructItemStack().asQuantity(chetheriteReward))
 		}
+		val message: String =
+			(
+				(if (title != null)
+					"\n<gold>${title}\n" else "")
+				+ (if(description != null)
+					"<gray>Achievement Granted: ${description}<reset>\n" else "")
+				+ (if (creditReward > 0)
+					"Credits: $creditReward\n" else "")
+				+ (if (experienceReward > 0)
+					"Experience: $experienceReward\n" else "")
+				+ if (chetheriteReward > 0)
+					"Chetherite: $chetheriteReward\n" else ""
+			)
 
-		player.sendRichMessage(
-			(if (title != null)
-				"\n<gold>${title}\n" else "")
-			+ (if(description != null)
-				"<gray>Achievement Granted: ${description}<reset>\n" else "")
-			+ (if (creditReward > 0)
-				"Credits: $creditReward\n" else "")
-			+ (if (experienceReward > 0)
-				"Experience: $experienceReward\n" else "")
-			+ if (chetheriteReward != 0)
-				"Chetherite: $chetheriteReward\n" else ""
-		)
+		if(message != "") player.sendRichMessage(message)
 	}
 }

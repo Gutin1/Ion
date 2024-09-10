@@ -90,8 +90,6 @@ object Hyperspace : IonServerComponent() {
 		val warmup = (5.0 + log10(mass) * 2.0 + sqrt(speed.toDouble()) / 10.0).toInt()
 
 		warmupTasks[starship] = HyperspaceWarmup(starship, warmup, dest, hyperdrive, useFuel)
-		val player = (starship.controller as? PlayerController)?.player ?: return
-		Achievement.ENTER_HYPERSPACE.rewardAdvancement(player)
 	}
 
 	fun cancelJumpWarmup(warmup: HyperspaceWarmup) {

@@ -4,14 +4,13 @@ import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.custom.items.CustomItems.customItem
 import net.horizonsend.ion.server.features.space.SpaceWorlds
-import net.horizonsend.ion.server.features.starship.event.StarshipDetectEvent
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomItems
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.vaultEconomy
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerAdvancementDoneEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
@@ -42,6 +41,11 @@ object AchievementListeners : IonServerComponent() {
 			Achievement.VISIT_ALL_SYSTEMS.key -> {
 				Achievement.VISIT_ALL_SYSTEMS.rewardAdvancement(event.player)
 			}
+			/*
+			Achievement.SINK_EACH_AI_SHIP.key -> {
+				Achievement.SINK_EACH_AI_SHIP.rewardAdvancement(event.player)
+			}
+			*/
 
 		}
 	}
@@ -53,11 +57,12 @@ object AchievementListeners : IonServerComponent() {
 		if (killer !== event.player) Achievement.KILL_PLAYER.rewardAdvancement(killer)
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	@Suppress("Unused")
-	fun onDetectShip(event: StarshipDetectEvent) {
-		Achievement.DETECT_SHIP.rewardAdvancement(event.player)
-	}
+/* UNUSED EVENT */
+//	@EventHandler(priority = EventPriority.MONITOR)
+//	@Suppress("Unused")
+//	fun onDetectShip(event: StarshipDetectEvent) {
+//		Achievement.DETECT_SHIP.rewardAdvancement(event.player)
+//	}
 
 	@EventHandler
 	@Suppress("Unused")
@@ -68,9 +73,7 @@ object AchievementListeners : IonServerComponent() {
 		}
 		val advancement = try{
 			Achievement.valueOf("VISIT_${(player.world.name).uppercase()}")
-		}catch(_: IllegalArgumentException){
-			Achievement.EXPLORATION_ROOT
-		}
+		}catch(_: IllegalArgumentException){ return }
 		advancement.rewardAdvancement(player)
 	}
 
@@ -113,6 +116,8 @@ object AchievementListeners : IonServerComponent() {
 	}
 
 	private fun detectObtainedItem(player: Player, item: ItemStack){
+		if (item.type == Material.AIR) return // dropped item
+
 		/* include legacy custom items (like power armor) */
 		val legacyCustomItem = CustomItems[item]
 		val newCustomItem = item.customItem
@@ -130,9 +135,7 @@ object AchievementListeners : IonServerComponent() {
 
 		val advancement = try{
 			Achievement.valueOf("OBTAIN_${name}")
-		}catch(_: IllegalArgumentException){
-			Achievement.MATERIALS_ROOT
-		}
+		}catch(_: IllegalArgumentException){ return } // picked up item doesn't give an achievement
 		advancement.rewardAdvancement(player)
 	}
 }

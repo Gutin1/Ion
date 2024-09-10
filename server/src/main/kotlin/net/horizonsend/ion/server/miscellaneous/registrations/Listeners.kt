@@ -84,8 +84,6 @@ val listeners: List<Listener> = listOf(
 	ToolModMenu,
 	RecipeModifications,
 
-	// Achievement Listeners
-	AchievementListeners,
 	WaypointListeners(),
 
 	//Packet Listeners

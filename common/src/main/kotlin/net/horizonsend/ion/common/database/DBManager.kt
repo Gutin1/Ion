@@ -19,6 +19,7 @@ import net.horizonsend.ion.common.database.schema.economy.EcoStation
 import net.horizonsend.ion.common.database.schema.misc.Bookmark
 import net.horizonsend.ion.common.database.schema.misc.ClaimedBounty
 import net.horizonsend.ion.common.database.schema.misc.SLPlayer
+import net.horizonsend.ion.common.database.schema.misc.SLPlayerStatistic
 import net.horizonsend.ion.common.database.schema.misc.Shuttle
 import net.horizonsend.ion.common.database.schema.nations.CapturableStation
 import net.horizonsend.ion.common.database.schema.nations.CapturableStationSiege
@@ -101,6 +102,7 @@ object DBManager : IonComponent() {
 
 		// misc
 		SLPlayer.init()
+		SLPlayerStatistic.init()
 		Shuttle.init()
 		Bookmark.init()
 
