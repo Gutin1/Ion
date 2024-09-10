@@ -8,6 +8,7 @@ import net.horizonsend.ion.common.extensions.information
 import net.horizonsend.ion.common.extensions.success
 import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.server.command.SLCommand
+import net.horizonsend.ion.server.features.achievements.Achievement
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -20,7 +21,7 @@ object FleetCommand : SLCommand() {
             sender.userError("You are already in a fleet")
             return
         }
-
+		Achievement.CREATE_FLEET.rewardAdvancement(sender)
         Fleets.create(sender)
         sender.success("Created fleet")
     }

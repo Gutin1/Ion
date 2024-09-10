@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.features.progression.achievements
+package net.horizonsend.ion.server.features.achievements
 
 import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.CommandAlias

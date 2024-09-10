@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.features.progression.achievements
+package net.horizonsend.ion.server.features.achievements
 
 import net.horizonsend.ion.common.database.schema.misc.SLPlayer
 import net.horizonsend.ion.server.LegacySettings
