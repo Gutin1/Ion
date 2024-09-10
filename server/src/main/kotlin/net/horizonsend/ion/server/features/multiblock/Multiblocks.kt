@@ -133,7 +133,6 @@ import net.horizonsend.ion.server.features.multiblock.type.starshipweapon.turret
 import net.horizonsend.ion.server.features.multiblock.type.starshipweapon.turret.TopQuadTurretMultiblock
 import net.horizonsend.ion.server.features.multiblock.type.starshipweapon.turret.TopTriTurretMultiblock
 import net.horizonsend.ion.server.features.achievements.Achievement
-import net.horizonsend.ion.server.features.progression.achievements.rewardAchievement
 import net.horizonsend.ion.server.miscellaneous.registrations.NamespacedKeys
 import net.kyori.adventure.text.Component.newline
 import net.kyori.adventure.text.Component.text

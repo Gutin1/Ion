@@ -3,10 +3,11 @@ package net.horizonsend.ion.server.features.achievements
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.custom.items.CustomItems.customItem
-import net.horizonsend.ion.server.features.space.SpaceWorlds
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomItems
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.vaultEconomy
+import net.horizonsend.ion.server.features.world.IonWorld.Companion.ion
+import net.horizonsend.ion.server.features.world.WorldFlag
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -68,7 +69,7 @@ object AchievementListeners : IonServerComponent() {
 	@Suppress("Unused")
 	fun onPlayerChangedWorldEvent(event: PlayerChangedWorldEvent){
 		val player = event.player
-		if(SpaceWorlds.contains(player.world)){
+		if(player.world.ion.hasFlag(WorldFlag.SPACE_WORLD)){
 			Achievement.ENTER_SPACE.rewardAdvancement(player)
 		}
 		val advancement = try{
