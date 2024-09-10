@@ -232,7 +232,7 @@ enum class Achievement(
 	OBTAIN_POWER_ARMOR_CHESTPLATE(	null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_chestplate",false), // s1ice
 	OBTAIN_POWER_ARMOR_LEGGINGS(	null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_leggings", 	false), // s1ice
 	OBTAIN_POWER_ARMOR_BOOTS(		null, null, 0, 0, 0, "technology/obtain_all_power_armor", "obtain_power_boots", 	false), // s1ice
-/* soon(tm)
+
 	SINK_EACH_AI_SHIP("Man Ms. Machine", "Sink at least one AI ship from every faction", 5000, 2500, 0, "", "", true), // s1ice
 	SINK_吃饭人(					null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_吃饭人", 				false), // s1ice
 	SINK_WATCHERS(				null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_watchers", 				false), // s1ice
@@ -241,7 +241,7 @@ enum class Achievement(
 	SINK_SYSTEM_DEFENSE_FORCES( null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_system_defense_forces", false), // s1ice
 	SINK_TSAII_RAIDERS(			null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_tsaii_raiders", 		false), // s1ice
 	SINK_PIRATES(				null, null, 0, 0, 0, "exploration/sink_each_ai_ship", "sink_pirates", 				false), // s1ice
-*/
+
 	VISIT_ALL_PLANETS("Mr. Worldwide", "Visit Every Planet", 7500, 2500, 0, "", "", true), // s1ice
 	VISIT_AERACH(	null, null, 100, 125, 0, "exploration/visit_all_planets", "visit_aerach", 	false), // s1ice
 	VISIT_ARET(		null, null, 100, 125, 0, "exploration/visit_all_planets", "visit_aret", 	false), // s1ice
